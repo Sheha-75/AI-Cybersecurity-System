@@ -1,6 +1,6 @@
+previous_attempts = set()
 MAX_ATTEMPTS = 3
 attempts = 0
-previous_attempts = set()
 
 from sklearn.ensemble import RandomForestClassifier
 import time
@@ -70,12 +70,14 @@ def ai_auditor(decision, typing_time):
         return "FLAGGED"
     return "OK"
 
-# replyay
-def detect_replay(password):
-    if password in previous_attempts:
+#reply attack
+def detect_reply(password, typing_time):
+    attempt = (password, round(typing_time, 2))
+
+    if attempt in previous_attempts:
         return True
 
-    previous_attempts.add(password)
+    previous_attempts.add(attempt)
     return False
 
 # Step 4: Run system
@@ -84,11 +86,9 @@ def run_system():
 
     while  True:
 
-        password, typing_time = capture_input()
+	password, typing_time = capture_input()
 
-        if detect_replay(password):
-            print("Replay Attack Detected")
-            break
+
 
         decision = main_ai(password, typing_time)
         audit = ai_auditor(decision, typing_time)
@@ -117,3 +117,4 @@ def run_system():
     print(f"Typing Time: {typing_time:.2f} sec")
 
 run_system()
+
