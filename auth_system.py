@@ -2,6 +2,8 @@ MAX_ATTEMPTS = 3
 attempts = 0
 previous_attempts = set()
 
+import csv
+from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 import time
 
@@ -78,6 +80,17 @@ def detect_replay(password):
     previous_attempts.add(password)
     return False
 
+def log_event(password, typing_time, decision, attack_type):
+    with open("security_logs.csv", "a", newline="") as file:
+        writer = csv.writer(file)
+
+        writer.writerow([
+            datetime.now(),
+            password,
+            round(typing_time, 2),
+            decision,
+            attack_type
+        ])
 # Step 4: Run system
 def run_system():
     global attempts
@@ -87,7 +100,8 @@ def run_system():
         password, typing_time = capture_input()
 
         if detect_replay(password):
-            print("Replay Attack Detected")
+            print(" Replay Attack Detected")
+            log_event(password, typing_time, "DENY", "REPLAY")
             break
 
         decision = main_ai(password, typing_time)
@@ -96,22 +110,27 @@ def run_system():
         if decision == "DENY_INJECTION":
             print("Access Denied (Prompt Injection Detected)")
             attempts += 1
+            log_event(password, typing_time, "DENY", "INJECTION")
 
         elif audit == "FLAGGED":
-            print(" Access Denied (Suspicious Behavior)")
+            print("Access Denied (Suspicious Behavior)")
             attempts += 1
+            log_event(password, typing_time, "DENY", "SUSPICIOUS")
 
         elif decision == "ALLOW":
-            print(" Access Granted")
+            print("Access Granted")
             attempts = 0
+            log_event(password, typing_time, "ALLOW", "NORMAL")
 
         else:
-            print(" Access Denied")
+            print("Access Denied")
             attempts += 1
+            log_event(password, typing_time, "DENY", "WRONG_PASSWORD")
 
     # Lock system after too many attempts
         if attempts >= 3:
             print("System Locked (Too many attempts)")
+            log_event(password, typing_time, "DENY", "LOCKED")
             break
 
     print(f"Typing Time: {typing_time:.2f} sec")
