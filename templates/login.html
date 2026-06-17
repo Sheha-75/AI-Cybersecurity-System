@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Authentication System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 24px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #005ea6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <h1>AI Authentication System</h1>
+
+        <form action="/login" method="post">
+
+            <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                required
+            >
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                required
+            >
+
+            <input
+                type="hidden"
+                id="typing_time"
+                name="typing_time"
+            >
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+    </div>
+
+    <script>
+        let startTime = null;
+
+        const passwordField = document.getElementById("password");
+        const loginForm = document.querySelector("form");
+
+        passwordField.addEventListener("focus", () => {
+            startTime = Date.now();
+        });
+
+        loginForm.addEventListener("submit", () => {
+            let elapsed = 0;
+
+            if (startTime !== null) {
+                elapsed = (Date.now() - startTime) / 1000;
+            }
+
+            document.getElementById("typing_time").value = elapsed;
+        });
+    </script>
+
+</body>
+</html>

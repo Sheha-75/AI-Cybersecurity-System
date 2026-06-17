@@ -1,0 +1,58 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Dashboard</title>
+</head>
+
+<body>
+
+    <h1>Security Dashboard</h1>
+
+    <h3>Welcome, {{ session.username }}</h3>
+
+    <a href="/logout">Logout</a>
+
+    <h2>Summary</h2>
+
+    <ul>
+        <li>Total Attempts: {{ total_attempts }}</li>
+        <li>Successful Logins: {{ successful }}</li>
+        <li>Denied Logins: {{ denied }}</li>
+    </ul>
+
+    <h2>Attack Types</h2>
+
+    <ul>
+        {% for attack, count in attack_counts.items() %}
+            <li>{{ attack }}: {{ count }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Recent Events</h2>
+
+    <table border="1">
+
+        <tr>
+            <th>Time</th>
+            <th>Username</th>
+            <th>Typing Time</th>
+            <th>Decision</th>
+            <th>Attack Type</th>
+        </tr>
+
+        {% for row in recent_logs %}
+        <tr>
+            <td>{{ row.time }}</td>
+            <td>{{ row.username }}</td>
+            <td>{{ row.typing_time }}</td>
+            <td>{{ row.decision }}</td>
+            <td>{{ row.attack_type }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</body>
+</html>
+
